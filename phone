@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Phone Keypad</title>
+  </head>
+  <body>
+    <h1>Phone Keypad</h1>
+    <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
+    <br><br>
+    <table>
+      <tr>
+        <td><button onclick="addNumber(1)">1</button></td>
+        <td><button onclick="addNumber(2)">2</button></td>
+        <td><button onclick="addNumber(3)">3</button></td>
+      </tr>
+      <tr>
+        <td><button onclick="addNumber(4)">4</button></td>
+        <td><button onclick="addNumber(5)">5</button></td>
+        <td><button onclick="addNumber(6)">6</button></td>
+      </tr>
+      <tr>
+        <td><button onclick="addNumber(7)">7</button></td>
+        <td><button onclick="addNumber(8)">8</button></td>
+        <td><button onclick="addNumber(9)">9</button></td>
+      </tr>
+      <tr>
+        <td><button onclick="addNumber('*')">*</button></td>
+        <td><button onclick="addNumber(0)">0</button></td>
+        <td><button onclick="addNumber('#')">#</button></td>
+      </tr>
+    </table>
+    <br>
+    <input type="text" id="name" name="name" placeholder="Enter contact name">
+    <select id="category">
+      <option value="family">Family</option>
+      <option value="friends">Friends</option>
+      <option value="work">Work</option>
+      <option value="other">Other</option>
+    </select>
+    <br><br>
+    <button onclick="makeCall()">Call</button>
+    <button onclick="saveContact()">Save Contact</button>
+    <br><br>
+    <h2>Phonebook</h2>
+    <ul id="phonebook">
+    </ul>
+    
+<style>body {
+  background-color: #f8f8f8;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+table {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 10px;
+}
+
+button {
+  border: none;
+  background-color: #333;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+  transform: scale(0.9);
+  box-shadow: none;
+}
+
+input[type="tel"], input[type="text"], select {
+  display: block;
+  margin: 0 auto;
+  padding: 0.8rem 1.2rem;
+  font-size: 1.2rem;
+  border: 2px solid #333;
+  border-radius: 10px;
+  width: 80%;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="tel"]:focus, input[type="text"]:focus, select:focus {
+  outline: none;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  border-color: #333;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#phonebook {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 80%;
+}
+
+#phonebook li {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border: 2px solid #333;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #333;
+  transition: all 0.2s ease-in-out;
+}
+
+#phonebook li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+#notification {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem;
+  background-color: #333;
+  color: #fff;
+  font-size: 1.2rem;
+  text-align: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease-in-out;
+}
+
+#notification.show {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 0.5s ease-in-out;
+}
+
+</style>
+<div id="notification"></div>
+
+    <script>
+      function addNumber(num) {
+        var phone = document.getElementById("phone");
+        phone.value += num;
+      }
+
+      function makeCall() {
+        var phone = document.getElementById("phone");
+        showNotification("Calling "
+ + phone.value);
+        // Code to make the call would go here
+      }
+
+      function saveContact() {
+        var phone = document.getElementById("phone");
+        var name = document.getElementById("name");
+        var category = document.getElementById("category");
+        var contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+        var contact = {
+          name: name.value,
+          phone: phone.value,
+          category: category.value
+        };
+        contacts.push(contact);
+        localStorage.setItem("contacts", JSON.stringify(contacts));
+        showNotification("Contact saved successfully!");
+
+        name.value = "";
+        phone.value = "";
+      }
+
+      function displayPhonebook() {
+        var phonebook = document.getElementById("phonebook");
+        phonebook.innerHTML = "";
+        var contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+        contacts.forEach(function(contact) {
+          var li = document.createElement("li");
+          li.textContent = contact.name + " (" + contact.category + "): " + contact.phone;
+          phonebook.appendChild(li);
+        });
+      }
+function showNotification(message) {
+  const notification = document.getElementById("notification");
+  notification.innerHTML = message;
+  notification.classList.add("show");
+
+  setTimeout(() => {
+    notification.classList.remove("show");
+  }, 3000); // Change 3000 to the desired time in milliseconds for the notification to disappear
+}
+
+      displayPhonebook();
+</script>
